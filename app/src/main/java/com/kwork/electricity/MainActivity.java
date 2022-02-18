@@ -9,14 +9,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+// ...
+// Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+// Check if user is signed in (non-null) and update UI accordingly.
+        currentUser = mAuth.getCurrentUser();
 
-        //setTitle("Электро-сети");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -25,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected (MenuItem item){
-        startActivity(new Intent(this, Registration.class));
+        if(currentUser != null){
+            startActivity(new Intent(this, CabinetActivity.class));
+        }
+        else startActivity(new Intent(this, Registration.class));
         return true;
     }
 

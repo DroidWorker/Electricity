@@ -1,10 +1,12 @@
 package com.kwork.electricity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,6 +18,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kwork.electricity.R;
 
 public class Registration extends AppCompatActivity {
@@ -24,8 +33,14 @@ public class Registration extends AppCompatActivity {
     boolean Passwordcorrect = false;
     Context ctx;
 
+    EditText etName;
+    EditText etEmail;
     EditText etPassword;
     EditText etPasswordRepeat;
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+    SharedPreferences mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +48,20 @@ public class Registration extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
         ctx = this;
         setTitle("РЕГИСТРАЦИЯ");
+// ...
+// Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+// Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            Toast.makeText(this, "registered", Toast.LENGTH_SHORT).show();
+        }
+        mDatabase = FirebaseDatabase.getInstance("https://electroseti-9a632-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
-        EditText etName = findViewById(R.id.editTextName);
-        EditText etEmail = findViewById(R.id.editTextEmail);
+        mSettings = getSharedPreferences("AppConfig", Context.MODE_PRIVATE);
+
+        etName = findViewById(R.id.editTextName);
+        etEmail = findViewById(R.id.editTextEmail);
         etPassword = findViewById(R.id.editTextPassword);
         etPasswordRepeat = findViewById(R.id.editTextPassword2);
 
@@ -121,7 +147,25 @@ public class Registration extends AppCompatActivity {
 
     public void onAcceptClick(View view){
         if (Namecorrect&&Emailcorrect&&Passwordcorrect&&etPassword.getText().toString().equals(etPasswordRepeat.getText().toString())){
-            Toast.makeText(ctx, "AllOK", Toast.LENGTH_SHORT).show();
+            mAuth.createUserWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                SharedPreferences.Editor editor = mSettings.edit();
+                                editor.putString("userName", etName.getText().toString());
+                                editor.putString("userEmail", etEmail.getText().toString());
+                                editor.apply();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                mDatabase.child("users").child(user.getUid()).child("userName").setValue(etName.getText().toString());
+                                startActivity(new Intent(ctx, CabinetActivity.class));
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(ctx, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
         }
         else{
             Toast.makeText(ctx, "пароли не совпдают", Toast.LENGTH_SHORT).show();
