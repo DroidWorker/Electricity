@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -37,6 +38,8 @@ public class EnterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     SharedPreferences mSettings;
+
+    String adminUID = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,10 +138,26 @@ public class EnterActivity extends AppCompatActivity {
 
                                     }
                                 });
+                                mDatabase.child("adminID").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        adminUID = snapshot.getValue().toString();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
                                 SharedPreferences.Editor editor = mSettings.edit();
                                 editor.putString("userName", userName);
                                 editor.putString("userEmail", etEmail.getText().toString());
                                 editor.apply();
+                                if (user.getUid().equals(adminUID)){
+                                    startActivity(new Intent(EnterActivity.this, AdminActivity.class));
+                                }
+                                else
+                                    startActivity(new Intent(EnterActivity.this, CabinetActivity.class));
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(EnterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();

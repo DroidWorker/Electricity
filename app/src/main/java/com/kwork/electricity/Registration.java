@@ -159,6 +159,7 @@ public class Registration extends AppCompatActivity {
                                 editor.apply();
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 mDatabase.child("users").child(user.getUid()).child("userName").setValue(etName.getText().toString());
+                                mDatabase.child("users").child(user.getUid()).child("userEmail").setValue(etEmail.getText().toString());
                                 startActivity(new Intent(ctx, CabinetActivity.class));
                             } else {
                                 // If sign in fails, display a message to the user.

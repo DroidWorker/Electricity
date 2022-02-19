@@ -93,4 +93,10 @@ public class User {
         mDatabase.child(key).setValue(value);
         Log.i("action","added");
     }
+
+    public Boolean isInfoFull(){
+        if (surname==null||name==null||patronymic==null||phone==null||email==null)
+            return false;
+        else return true;
+    }
 }
