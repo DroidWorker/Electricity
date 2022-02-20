@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_root"
+    android:id="@+id/layout_root_service"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#4B3D3D"
@@ -9,19 +9,20 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/tv"
+        android:id="@+id/tv_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="номер бригады"
+        android:text="название услуги"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#FFFFFF" />
 
     <EditText
-        android:id="@+id/input_text"
+        android:id="@+id/input_text_service"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="#3D414B"
-        android:inputType="number"
+        android:inputType="text"
+        android:maxLength="80"
         android:textColor="#FFFFFF">
 
         <requestFocus />

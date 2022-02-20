@@ -16,17 +16,21 @@
         android:background="#3D414B"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="0dp"/>
 
-    <TextView
+    <EditText
         android:id="@+id/textViewAddComment"
+        android:layout_width="0dp"
         android:layout_height="300dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="#3D414B"
         android:fontFamily="@font/electrolize"
+        android:gravity="top"
         android:hint="комментарий к заказу"
+        android:inputType="textMultiLine"
         android:padding="5dp"
         android:paddingLeft="5dp"
         android:textColor="#FFFFFF"
@@ -37,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewAdress" />
 
-    <TextView
+    <EditText
         android:id="@+id/textViewAdress"
         android:layout_height="45dp"
         android:layout_marginStart="16dp"
@@ -53,7 +57,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typeOfService" />
+        app:layout_constraintTop_toBottomOf="@+id/typeOfService"
+        android:layout_width="0dp"/>
 
     <Spinner
         android:id="@+id/dateOfService"
@@ -64,13 +69,15 @@
         android:background="#3D414B"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAddComment" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAddComment"
+        android:layout_width="0dp"/>
 
     <Button
         android:id="@+id/button2"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:backgroundTint="#4B3D3D"
+        android:onClick="onApplyClick"
         android:text="ОФОРМИТЬ"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

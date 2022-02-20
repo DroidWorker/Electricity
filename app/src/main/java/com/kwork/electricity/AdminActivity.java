@@ -31,12 +31,15 @@ public class AdminActivity extends AppCompatActivity {
         startActivity(new Intent(this, BrigadeActivity.class));
     }
     public void onServisesClick(View view){
-
+        startActivity(new Intent(this, ServicesActivity.class));
     }
     public void onOrdersClick(View view){
 
     }
     public void onReviewsClick(View view){
 
+    }
+    public void onDatesClick(View view){
+        startActivity(new Intent(this, DatesActivity.class));
     }
 }

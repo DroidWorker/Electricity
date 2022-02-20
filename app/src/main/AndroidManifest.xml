@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Электросети">
         <activity
+            android:name=".DatesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ServicesActivity"
+            android:exported="false" />
+        <activity
             android:name=".OrdersActivity"
             android:exported="false" />
         <activity
