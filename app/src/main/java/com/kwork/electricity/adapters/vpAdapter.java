@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,9 +16,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.kwork.electricity.DataClasses.Order;
 import com.kwork.electricity.DataClasses.User;
 import com.kwork.electricity.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +37,13 @@ public class vpAdapter extends PagerAdapter {
     private User user;
     int[] viewNums;
 
+    ArrayList<Order> orders = new ArrayList<>();
+    ArrayList<String> orderIds = new ArrayList<>();
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+    private FirebaseUser currentUser;
+
     EditText EtSurname;
     EditText EtName;
     EditText EtPatronymic;
@@ -35,12 +52,34 @@ public class vpAdapter extends PagerAdapter {
 
     SharedPreferences mSettings;
 
+    MyOrdersAdapter adapter;
+
     public vpAdapter(Context context, int[] nums, User user) {
         this.mContext = context;
         viewNums= nums;
         this.user = user;
 
         mSettings = context.getSharedPreferences("AppConfig", Context.MODE_PRIVATE);
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+        mDatabase = FirebaseDatabase.getInstance("https://electroseti-9a632-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
+
+        DatabaseReference ref = mDatabase.child("users").child(currentUser.getUid()).child("orders");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snap:snapshot.getChildren()
+                     ) {
+                    orderIds.add(snap.getKey());
+                }
+                fillOOrders();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -107,7 +146,7 @@ public class vpAdapter extends PagerAdapter {
             itemView=inflater.inflate(R.layout.page2, container,
                     false);
             RecyclerView rv = itemView.findViewById(R.id.ordersView);
-            MyOrdersAdapter adapter = new MyOrdersAdapter(mContext, Arrays.asList("aaaaaa", "bbbbbbb"));
+            adapter = new MyOrdersAdapter(mContext, orders);
             rv.setAdapter(adapter);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -121,5 +160,34 @@ public class vpAdapter extends PagerAdapter {
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         return;
+    }
+
+    void fillOOrders(){
+        mDatabase.child("orders").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snap:snapshot.getChildren()
+                     ) {
+                    if (orderIds.contains(snap.getKey())){
+                        Order order = new Order();
+                        order.orderId = snap.getKey();
+                        order.adress = snap.child("address").getValue().toString();
+                        order.status = snap.child("status").getValue().toString();
+                        if (order.status.equals("бригада назначена"))
+                            order.brigadeId = snap.child("brigadeId").getValue().toString();
+                        order.serviceType = snap.child("serviceType").getValue().toString();
+                        order.date = snap.child("date").getValue().toString();
+                        order.comment = snap.child("comment").getValue().toString();
+                        orders.add(order);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
