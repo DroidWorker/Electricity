@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kwork.electricity.DataClasses.Brigade;
+import com.kwork.electricity.utils.CheckInternet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +72,13 @@ public class ServicesActivity extends AppCompatActivity {
 
             }
         });
+    }
+    @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

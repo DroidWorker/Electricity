@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.kwork.electricity.utils.CheckInternet;
+
 public class AdminActivity extends AppCompatActivity {
 
     @Override
@@ -15,6 +17,13 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
         setTitle("АДМИНИСТРАТОР");
+    }
+    @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -34,10 +43,12 @@ public class AdminActivity extends AppCompatActivity {
         startActivity(new Intent(this, ServicesActivity.class));
     }
     public void onOrdersClick(View view){
-
+        Intent intent = new Intent(this, OrdersActivity.class);
+        intent.putExtra("mode", 1);
+        startActivity(intent);
     }
     public void onReviewsClick(View view){
-
+        startActivity(new Intent(this, ReviewsActivity.class));
     }
     public void onDatesClick(View view){
         startActivity(new Intent(this, DatesActivity.class));

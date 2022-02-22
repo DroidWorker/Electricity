@@ -5,6 +5,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.kwork.electricity.DataClasses.User;
 import com.kwork.electricity.adapters.vpAdapter;
+import com.kwork.electricity.utils.CheckInternet;
 
 public class CabinetActivity extends AppCompatActivity {
 
@@ -86,6 +88,13 @@ public class CabinetActivity extends AppCompatActivity {
 
             }
         });
+    }
+    @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

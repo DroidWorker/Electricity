@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kwork.electricity.utils.CheckInternet;
 
 public class OrderActivity extends AppCompatActivity {
 
@@ -60,6 +61,13 @@ public class OrderActivity extends AppCompatActivity {
             comment.setText("комментарий к заказу: "+intent.getStringExtra("comment"));
         else
             comment.setText("комментарий к заказу: отсутствует");
+    }
+    @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

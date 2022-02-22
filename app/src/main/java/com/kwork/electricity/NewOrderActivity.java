@@ -3,6 +3,7 @@ package com.kwork.electricity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kwork.electricity.utils.CheckInternet;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -148,6 +150,13 @@ public class NewOrderActivity extends AppCompatActivity {
             }
         });
 
+    }
+    @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

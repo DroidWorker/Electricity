@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kwork.electricity.utils.CheckInternet;
 
 public class EnterActivity extends AppCompatActivity {
     boolean Emailcorrect = false;
@@ -106,6 +107,13 @@ public class EnterActivity extends AppCompatActivity {
         });
     }
     @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_back, menu);
         return true;
@@ -115,10 +123,36 @@ public class EnterActivity extends AppCompatActivity {
         this.finish();
         return true;
     }
-
+    String brigadeID;
     String userName = "error";
     public void onLoginClick(View view){
         if (Emailcorrect&&Passwordcorrect){
+            if (etEmail.getText().toString().equals("brigade@admin.dev")){
+                mDatabase.child("brigades").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot snap:snapshot.getChildren()
+                             ) {
+                            if (etPassword.getText().toString().equals(snap.child("password").getValue().toString())) {
+                                brigadeID = snap.getKey().toString();
+                                SharedPreferences.Editor editor = mSettings.edit();
+                                editor.putString("brigade", brigadeID);
+                                editor.apply();
+                                Intent intent = new Intent(EnterActivity.this, OrdersActivity.class);
+                                intent.putExtra("mode", 0);
+                                intent.putExtra("brigadeID", brigadeID);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                return;
+            }
             mAuth.signInWithEmailAndPassword(etEmail.getText().toString(), etPassword.getText().toString())
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -131,6 +165,10 @@ public class EnterActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         userName = snapshot.child("userName").getValue().toString();
+                                        SharedPreferences.Editor editor = mSettings.edit();
+                                        editor.putString("userName", userName);
+                                        editor.putString("userEmail", etEmail.getText().toString());
+                                        editor.apply();
                                     }
 
                                     @Override
@@ -142,6 +180,14 @@ public class EnterActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         adminUID = snapshot.getValue().toString();
+                                        if (user.getUid().equals(adminUID)){
+                                            EnterActivity.this.finish();
+                                            startActivity(new Intent(EnterActivity.this, AdminActivity.class));
+                                        }
+                                        else {
+                                            EnterActivity.this.finish();
+                                            startActivity(new Intent(EnterActivity.this, CabinetActivity.class));
+                                        }
                                     }
 
                                     @Override
@@ -149,15 +195,6 @@ public class EnterActivity extends AppCompatActivity {
 
                                     }
                                 });
-                                SharedPreferences.Editor editor = mSettings.edit();
-                                editor.putString("userName", userName);
-                                editor.putString("userEmail", etEmail.getText().toString());
-                                editor.apply();
-                                if (user.getUid().equals(adminUID)){
-                                    startActivity(new Intent(EnterActivity.this, AdminActivity.class));
-                                }
-                                else
-                                    startActivity(new Intent(EnterActivity.this, CabinetActivity.class));
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(EnterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();

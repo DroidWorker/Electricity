@@ -8,7 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kwork.electricity.DataClasses.Brigade;
 import com.kwork.electricity.adapters.BrigadesAdapter;
+import com.kwork.electricity.utils.CheckInternet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +85,13 @@ public class BrigadeActivity extends AppCompatActivity {
         });
     }
     @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_back, menu);
         return true;
@@ -96,12 +108,34 @@ public class BrigadeActivity extends AppCompatActivity {
         AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(this);
         mDialogBuilder.setView(promptsView);
         final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text);
+        final EditText userInput2 = (EditText) promptsView.findViewById(R.id.input_text2);
+        userInput2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (userInput2.getText().toString().matches("^(?=.*?[A-ZА-Я])(?=.*?[a-zа-я])(?=.*?[0-9]).{8,}$")){
+                    userInput2.setBackgroundColor(Color.TRANSPARENT);
+                }
+                else
+                    userInput2.setBackgroundColor(Color.RED);
+            }
+        });
         mDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int id) {
                                 mDatabase.child(userInput.getText().toString()).child("brigadeStatus").setValue("бригада свободна");
+                                mDatabase.child(userInput.getText().toString()).child("password").setValue(userInput2.getText().toString());
                             }
                         })
                 .setNegativeButton("Отмена",

@@ -3,8 +3,11 @@ package com.kwork.electricity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,12 +21,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kwork.electricity.utils.CheckInternet;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
     private DatabaseReference mDatabase;
+    SharedPreferences mSettings;
     private String adminUID = null;
     View root;
 
@@ -32,6 +37,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         root = findViewById(R.id.root);
+        mSettings = getSharedPreferences("AppConfig", Context.MODE_PRIVATE);
+        if (mSettings.getString("brigade", null)!=null){
+            Intent intent = new Intent(this, OrdersActivity.class);
+            intent.putExtra("mode", 0);
+            intent.putExtra("brigadeID", mSettings.getString("brigade", "null"));
+            startActivity(intent);
+            this.finish();
+        }
 // ...
 // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -51,13 +64,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_registration, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected (MenuItem item){
-        if (adminUID==null)
+        if (adminUID==null||currentUser==null)
             Snackbar.make(root, "синхронизация с базой данных. Пожалуйста, подождите.", Snackbar.LENGTH_LONG).show();
         if(currentUser != null){
             if (currentUser.getUid().equals(adminUID)){

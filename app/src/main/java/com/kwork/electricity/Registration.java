@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kwork.electricity.R;
+import com.kwork.electricity.utils.CheckInternet;
 
 public class Registration extends AppCompatActivity {
     boolean Namecorrect = false;
@@ -135,6 +136,13 @@ public class Registration extends AppCompatActivity {
         });
     }
     @Override
+    public void onResume() {
+        if (!CheckInternet.hasConnection(this)){
+            startActivity(new Intent(this, NoInternetActivity.class));
+        }
+        super.onResume();
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.action_bar_back, menu);
         return true;
@@ -174,5 +182,6 @@ public class Registration extends AppCompatActivity {
     }
     public void onLoginClick(View view){
         startActivity(new Intent(this, EnterActivity.class));
+        this.finish();
     }
 }
