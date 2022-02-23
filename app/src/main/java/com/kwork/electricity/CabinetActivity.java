@@ -46,7 +46,7 @@ public class CabinetActivity extends AppCompatActivity {
         tl.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getId()==0){
+                if(tab.getPosition()==0){
                     vp.setCurrentItem(0);
                 }
                 else{
@@ -70,17 +70,17 @@ public class CabinetActivity extends AppCompatActivity {
         vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
                 if (position==0){
                     tl.getTabAt(0).select();
                 }
                 else{
                     tl.getTabAt(1).select();
                 }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
             }
 
             @Override

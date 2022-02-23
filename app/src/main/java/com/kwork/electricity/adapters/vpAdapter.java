@@ -141,6 +141,11 @@ public class vpAdapter extends PagerAdapter {
                 }
             });
             user.loadUser(EtSurname,EtName,EtPatronymic,EtPhone,EtEmail);
+            if (user.isInfoFull()){
+                SharedPreferences.Editor editor = mSettings.edit();
+                editor.putBoolean("readyToOrder", true);
+                editor.apply();
+            }
         }
         else{
             itemView=inflater.inflate(R.layout.page2, container,

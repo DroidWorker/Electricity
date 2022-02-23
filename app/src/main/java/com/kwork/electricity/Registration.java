@@ -169,6 +169,7 @@ public class Registration extends AppCompatActivity {
                                 mDatabase.child("users").child(user.getUid()).child("userName").setValue(etName.getText().toString());
                                 mDatabase.child("users").child(user.getUid()).child("userEmail").setValue(etEmail.getText().toString());
                                 startActivity(new Intent(ctx, CabinetActivity.class));
+                                finish();
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(ctx, "Authentication failed.", Toast.LENGTH_SHORT).show();

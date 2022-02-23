@@ -74,7 +74,7 @@
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="#4B3D3D"
         android:onClick="onApplyClick"

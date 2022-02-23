@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EA7330"
-    android:onClick="onAcceptDataClick">
+    android:background="#EA7330">
 
     <TextView
         android:id="@+id/textView2"

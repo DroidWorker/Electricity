@@ -103,7 +103,7 @@
                 android:background="#4B3D3D"
                 android:ems="10"
                 android:gravity="top"
-                android:inputType="textPersonName"
+                android:inputType="textMultiLine|text"
                 android:textColor="#FFFFFF" />
 
             <Button

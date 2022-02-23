@@ -7,11 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -77,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onOptionsItemSelected (MenuItem item){
-        if (adminUID==null||currentUser==null)
+        currentUser = mAuth.getCurrentUser();
+        if (adminUID==null)
             Snackbar.make(root, "синхронизация с базой данных. Пожалуйста, подождите.", Snackbar.LENGTH_LONG).show();
         if(currentUser != null){
             if (currentUser.getUid().equals(adminUID)){
@@ -94,6 +94,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, AboutActivity.class));
     }
     public void onNewOrderClick(View view){
-        startActivity(new Intent(this, NewOrderActivity.class));
+        if (currentUser!=null) {
+            if (mSettings.getBoolean("readyToOrder", false)){
+                startActivity(new Intent(this, NewOrderActivity.class));
+            }
+            else Snackbar.make(view, "Пожалуйста, заполните всю информацию в личном кабинете", Snackbar.LENGTH_LONG).show();
+        }
+        else Snackbar.make(view, "Для оформления заказа необходимо зарегистрироваться", Snackbar.LENGTH_LONG).show();
     }
 }

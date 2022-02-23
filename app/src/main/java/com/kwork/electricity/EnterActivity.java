@@ -142,6 +142,7 @@ public class EnterActivity extends AppCompatActivity {
                                 intent.putExtra("mode", 0);
                                 intent.putExtra("brigadeID", brigadeID);
                                 startActivity(intent);
+                                EnterActivity.this.finish();
                             }
                         }
                     }

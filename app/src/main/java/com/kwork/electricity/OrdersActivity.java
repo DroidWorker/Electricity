@@ -70,6 +70,13 @@ public class OrdersActivity extends AppCompatActivity {
                             order.serviceType = snap.child("serviceType").getValue().toString();
                             order.date = snap.child("date").getValue().toString();
                             order.comment = snap.child("comment").getValue().toString();
+                            for (Order o:orders
+                            ) {
+                                if (o.orderId.equals(order.orderId)) {
+                                    orders.remove(o);
+                                    break;
+                                }
+                            }
                             orders.add(order);
                         }
                     }
