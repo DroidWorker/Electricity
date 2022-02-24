@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -63,13 +64,15 @@ public class OrdersActivity extends AppCompatActivity {
                         if (snap.child("brigadeId").getValue()!=null&&brigadeID.equals(snap.child("brigadeId").getValue().toString())){
                             Order order = new Order();
                             order.orderId = snap.getKey();
+                            order.userUid = snap.child("userUID").getValue().toString();
                             order.adress = snap.child("address").getValue().toString();
                             order.status = snap.child("status").getValue().toString();
-                            if (order.status.equals("бригада назначена"))
+                            if (snap.child("brigadeId")!=null)
                                 order.brigadeId = snap.child("brigadeId").getValue().toString();
                             order.serviceType = snap.child("serviceType").getValue().toString();
                             order.date = snap.child("date").getValue().toString();
                             order.comment = snap.child("comment").getValue().toString();
+
                             for (Order o:orders
                             ) {
                                 if (o.orderId.equals(order.orderId)) {
@@ -98,6 +101,7 @@ public class OrdersActivity extends AppCompatActivity {
                             Order order = new Order();
                             order.orderId = snap.getKey();
                             order.adress = snap.child("address").getValue().toString();
+                        order.userUid = snap.child("userUID").getValue().toString();
                             order.status = snap.child("status").getValue().toString();
                             if (order.status.equals("бригада назначена"))
                                 order.brigadeId = snap.child("brigadeId").getValue().toString();

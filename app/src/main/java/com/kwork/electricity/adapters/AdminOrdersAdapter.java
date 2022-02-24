@@ -56,6 +56,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
         holder.orderID.setText("заказ №"+order.orderId);
         holder.serviceType.setText(order.serviceType);
         holder.brigadeStatus.setText("статус: "+order.status);
+        holder.adress.setText("адрес: "+order.adress);
         holder.serviceDate.setText("дата оказания услуги: "+order.date);
         if (order.brigadeId!=null)
             holder.brigadeId.setText("бригада №"+order.brigadeId);
@@ -83,6 +84,18 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
 
             }
         });
+        mDatabase.child("users").child(order.userUid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                holder.fio.setText(snapshot.child("userSurname").getValue().toString()+" "+snapshot.child("userName").getValue().toString()+" "+snapshot.child("userPatronymic").getValue().toString());
+                holder.phone.setText(snapshot.child("userPhone").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -91,7 +104,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView orderID, serviceType, brigadeStatus, serviceDate, brigadeId, review;
+        final TextView orderID, serviceType, brigadeStatus, serviceDate, adress, fio,  phone, brigadeId, review;
         ConstraintLayout root;
         ViewHolder(View view){
             super(view);
@@ -100,6 +113,9 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
             serviceType = view.findViewById(R.id.serviceType2);
             brigadeStatus = view.findViewById(R.id.brigadeStatus2);
             serviceDate = view.findViewById(R.id.serviseDate2);
+            adress = view.findViewById(R.id.adress);
+            fio = view.findViewById(R.id.fio);
+            phone = view.findViewById(R.id.phone);
             brigadeId = view.findViewById(R.id.brigadeId2);
             review = view.findViewById(R.id.review2);
         }
@@ -125,6 +141,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
                         mDatabase.child("orders").child(orderId).child("status").setValue("выполнен");
                         if (brigadeId!=null)
                             mDatabase.child("brigades").child(brigadeId).child("brigadeStatus").setValue("бригада свободна");
+                        Order.uppointOrder();
                     }
                 });
         builder.setNeutralButton("Cancel",

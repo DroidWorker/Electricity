@@ -189,6 +189,7 @@ public class NewOrderActivity extends AppCompatActivity {
                 mDatabase.child("brigades").child(freeBrigadeID).child("brigadeStatus").setValue("заказ получен");
             mDatabase.child("lastOrderId").setValue(String.valueOf(lastOrderID+1));
             mDatabase.child("users").child(currentUser.getUid()).child("orders").child(String.valueOf(lastOrderID+1)).setValue("null");
+            Snackbar.make(view, "заказ добавлен", Snackbar.LENGTH_LONG).show();
             finish();
         }
         else
