@@ -40,6 +40,7 @@ public class OrdersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
         setTitle("3АКАЗЫ");
+        Order.uppointOrder();
 
         mDatabase = FirebaseDatabase.getInstance("https://electroseti-9a632-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
@@ -103,7 +104,7 @@ public class OrdersActivity extends AppCompatActivity {
                             order.adress = snap.child("address").getValue().toString();
                         order.userUid = snap.child("userUID").getValue().toString();
                             order.status = snap.child("status").getValue().toString();
-                            if (order.status.equals("бригада назначена"))
+                            if (snap.child("brigadeId")!=null)
                                 order.brigadeId = snap.child("brigadeId").getValue().toString();
                             order.serviceType = snap.child("serviceType").getValue().toString();
                             order.date = snap.child("date").getValue().toString();

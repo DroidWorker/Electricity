@@ -112,7 +112,10 @@ public class DatesActivity extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener d=new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             selectedDate="";
-            selectedDate+=dayOfMonth+" "+(monthOfYear+1)+" "+year;
+            if (monthOfYear<10)
+                selectedDate+=dayOfMonth+" 0"+(monthOfYear+1)+" "+year;
+            else
+                selectedDate+=dayOfMonth+" "+(monthOfYear+1)+" "+year;
             date.set(Calendar.YEAR, year);
             date.set(Calendar.MONTH, monthOfYear);
             date.set(Calendar.DAY_OF_MONTH, dayOfMonth);

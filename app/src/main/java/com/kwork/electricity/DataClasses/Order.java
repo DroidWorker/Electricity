@@ -35,8 +35,9 @@ public class Order {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snap:snapshot.getChildren()
                      ) {
-                    if (snap.child("brigadeStatus").getValue().toString().equals("бригада свободна"))
+                    if (snap.child("brigadeStatus").getValue().toString().equals("бригада свободна")) {
                         freeBrigadesID.add(snap.getKey());
+                    }
                 }
                 setOrderToBrigade(freeBrigadesID);
             }
@@ -58,6 +59,7 @@ public class Order {
                 for (DataSnapshot snap:snapshot.getChildren()
                      ) {
                     if (freeBrigadesId.size()!=0){
+                        Log.i("uppoint", ""+dateText);
                         if (snap.child("status").getValue().toString().equals("в ожидании")&&snap.child("date").getValue().toString().equals(dateText)){
                             mDatabase.child("orders").child(snap.getKey()).child("brigadeId").setValue(freeBrigadesId.get(freeBrigadesId.size()-1));
                             mDatabase.child("orders").child(snap.getKey()).child("status").setValue("бригада назначена");

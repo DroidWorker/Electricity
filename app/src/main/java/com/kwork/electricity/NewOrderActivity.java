@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -124,6 +125,7 @@ public class NewOrderActivity extends AppCompatActivity {
         dateofservice.setAdapter(adapterDate);
 
         Date currentDate = new Date();
+        currentDate.setTime(0);
         DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", Locale.getDefault());
         String dateText = dateFormat.format(currentDate);
         mDatabase.child("dates").addValueEventListener(new ValueEventListener() {
@@ -132,9 +134,9 @@ public class NewOrderActivity extends AppCompatActivity {
                 try {
                     for (DataSnapshot snap : snapshot.getChildren()
                     ) {
-                        if ((dateFormat.parse(snap.getKey())).before(currentDate)) {
+                        if ((dateFormat.parse(snap.getKey())).compareTo(currentDate)<0) {
                             mDatabase.child("dates").child(snap.getKey()).removeValue();
-                        } else if (snap.getChildrenCount() < 5) {//4 orders + 1 initLine
+                        } else if (snap.getChildrenCount() < 5*brigadesCount) {//4 orders + 1 initLine
                             dateList.add(snap.getKey());
                         }
                     }

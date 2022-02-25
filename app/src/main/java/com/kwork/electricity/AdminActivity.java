@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.kwork.electricity.DataClasses.Order;
 import com.kwork.electricity.utils.CheckInternet;
 
 public class AdminActivity extends AppCompatActivity {
